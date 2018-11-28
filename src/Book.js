@@ -27,11 +27,10 @@ class Book extends Component {
                             backgroundImage: `url("${book.imageLinks ? book.imageLinks.smallThumbnail : ''}")`
                         }}></div>
                         <div className="book-shelf-changer">
-                            <select onChange={(e) => moveBook(book.id, e.target.value)}>
+                            <select onChange={(e) => moveBook(book.id, e.target.value)} defaultValue={book.shelf || 'none'} selected={book.shelf}>
                                 <option value="move" disabled>Move to...</option>
                                 {Object.keys(this.shelves).map((key, index) => (
-                                    <option key={key} value={key} disabled={book.shelf === key}
-                                            className={book.shelf === key ? 'green' : ''}>{this.shelves[key]}</option>
+                                    <option key={key} value={key} className={book.shelf === key ? 'green' : ''}>{this.shelves[key]}</option>
                                 ))}
                             </select>
                         </div>
