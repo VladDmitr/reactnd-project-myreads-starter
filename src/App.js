@@ -36,58 +36,23 @@ class BooksApp extends Component {
 
     /**
      *
-     * @param {string} bookId
+     * @param {object} book
      * @param {string} shelf
      */
-    moveBook = (bookId, shelf) => {
-        // The code below is commented out because the "BooksAPI.update" function does not work correctly
-        // and returns the same "json" without changes.
-        // @TODO uncomment when the "Books API.update" function works correctly
-
-        // BooksAPI.update(bookId, shelf).then((shelvesOfBooks) => {
-        //     console.log(shelvesOfBooks);
-        //     let promises = [];
-        //     for (let key in shelvesOfBooks) {
-        //         if (shelvesOfBooks.hasOwnProperty(key)) {
-        //             let books = shelvesOfBooks[key];
-        //             for (let i = 0; i < books.length; i++) {
-        //                 promises.push(BooksAPI.get(books[i]));
-        //             }
-        //         }
-        //     }
-        //
-        //     Promise.all(promises).then(books => {
-        //         let shelvesOfBooks = {...this.state};
-        //         for (let key in shelvesOfBooks) {
-        //             if (shelvesOfBooks.hasOwnProperty(key)) {
-        //                 shelvesOfBooks[key].books = [];
-        //             }
-        //         }
-        //         for (let i = 0; i < books.length; i++) {
-        //             shelvesOfBooks[books[i].shelf].books.push(books[i]);
-        //         }
-        //         this.setState(shelvesOfBooks);
-        //     }).catch(function (error) {
-        //         console.log(error);
-        //     });
-        // });
-
-        // Workaround for the book move function
-        BooksAPI.update(bookId, shelf).then((shelvesOfBooks) => {
-            BooksAPI.get(bookId).then(book => {
-                book.shelf = shelf;
-                let shelvesOfBooks = {...this.state};
-                for (let key in shelvesOfBooks) {
-                    if (shelvesOfBooks.hasOwnProperty(key)) {
-                        let books = shelvesOfBooks[key].books;
-                        shelvesOfBooks[key].books = books.filter((b)=> b.id !== book.id);
-                        if (book.shelf === key) {
-                            shelvesOfBooks[key].books.push(book);
-                        }
+    moveBook = (book, shelf) => {
+        BooksAPI.update(book, shelf).then((books) => {
+            book.shelf = shelf;
+            let shelvesOfBooks = {...this.state};
+            for (let key in shelvesOfBooks) {
+                if (shelvesOfBooks.hasOwnProperty(key)) {
+                    let books = shelvesOfBooks[key].books;
+                    shelvesOfBooks[key].books = books.filter((b)=> b.id !== book.id);
+                    if (book.shelf === key) {
+                        shelvesOfBooks[key].books.push(book);
                     }
                 }
-                this.setState(shelvesOfBooks);
-            });
+            }
+            this.setState(shelvesOfBooks);
         });
     };
 
